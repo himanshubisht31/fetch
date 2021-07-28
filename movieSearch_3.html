@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=PT+Mono&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Catamaran&display=swap"
+      rel="stylesheet"
+    />
+
+
+    <title>Movie Database</title>
+  </head>
+  <body>
+    <div class="main">
+      <div class="head">
+        <h2>MOVIES POINT</h2>
+        <input
+          type="text"
+          placeholder="Enter Title"
+          onkeypress="movieData(event)"
+          id="inp"
+        />
+      </div>
+
+      <div class="content">
+        <div id="plot"></div>
+        <div id="details"></div>
+      </div>
+
+      <button id="btn1">STATS</button>
+      <button id="btn2">PLOT</button>
+    </div>
+  </body>
+</html>
+
+<script>
+  // key: 29e61f12
+
+  async function movieData(e) {
+    if (e.key == "Enter") {
+      var movie = document.getElementById("inp").value;
+      var details = document.getElementById("details");
+      var plotDiv = document.getElementById("plot");
+      var div = document.createElement("div");
+      details.innerHTML = null;
+      plotDiv.innerHTML = null;
+
+      var Title = document.createElement("p");
+      var Year = document.createElement("p");
+      var Runtime = document.createElement("p");
+      var Genre = document.createElement("p");
+      var Director = document.createElement("p");
+      var Language = document.createElement("p");
+      var imdbRating = document.createElement("p");
+      var recommended = document.createElement("p");
+      var Poster = document.createElement("img");
+      var divP = document.createElement("div");
+      var plot = document.createElement("p");
+
+      try {
+        var response = await fetch(
+          `http://www.omdbapi.com/?t=${movie}&apikey=29e61f12&plot=full`
+        );
+
+        var data = await response.json();
+
+        console.log(data);
+
+        if (data.Response === "False") {
+          var img = document.createElement("img");
+          img.src =
+            "https://media.giphy.com/media/8L0Pky6C83SzkzU55a/giphy.gif";
+          details.append(img);
+        } else {
+          Poster.src = data.Poster;
+          Title.innerHTML = ` <span class='feature'>Title :</span> ${data.Title}`;
+          Year.innerHTML = `<span class='feature'>Year :</span> ${data.Year}`;
+          Runtime.innerHTML = `<span class='feature'>Runtime : </span>${data.Runtime}`;
+          Genre.innerHTML = `<span class='feature'>Genre :</span> ${data.Genre}`;
+          Director.innerHTML = `<span class='feature'>Director :</span> ${data.Director}`;
+          Language.innerHTML = `<span class='feature'>Language :</span> ${data.Language}`;
+          imdbRating.innerHTML = `<span class='feature'>Rating :</span> ${data.imdbRating} ⭐`;
+          recommended.innerHTML = `<span class='recom'>Recommended</span>`;
+          plot.innerHTML = data.Plot;
+
+          if (data.imdbRating > 8.5) {
+            div.append(
+              Poster,
+              recommended,
+              Title,
+              imdbRating,
+              Year,
+              Runtime,
+              Genre,
+              Director,
+              Language
+            );
+            details.append(div);
+
+            divP.append(plot);
+            plotDiv.append(divP);
+          } else {
+            div.append(
+              Poster,
+              Title,
+              imdbRating,
+              Year,
+              Runtime,
+              Genre,
+              Director,
+              Language
+            );
+            details.append(div);
+
+            divP.append(plot);
+            plotDiv.append(divP);
+          }
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+
+  var button1 = document.getElementById("btn1");
+  var button2 = document.getElementById("btn2");
+
+  button1.addEventListener("click", function () {
+    // details.style.zIndex = '1';
+    // plot.style.zIndex = '-1';
+
+    details.style.display = "block";
+    plot.style.display = "none";
+    button1.style.display = "none";
+    button2.style.display = "block";
+  });
+
+  button2.addEventListener("click", function () {
+    // details.style.zIndex = '1';
+    // plot.style.zIndex = '-1';
+
+    details.style.display = "none";
+    plot.style.display = "block";
+
+    button2.style.display = "none";
+    button1.style.display = "block";
+  });
+</script>
